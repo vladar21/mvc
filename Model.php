@@ -61,6 +61,13 @@ class Model
         $sql = "DELETE FROM tasks WHERE id=$id";
         $db->exec($sql);            
     }
+
+    public function _updateTask($id, $n, $em, $t){        
+        $db = $this->loadDB(); 
+        $sql = "UPDATE tasks SET name='$n', email='$em', task='$t' WHERE id=$id";
+        var_dump($sql);
+        $db->exec($sql);            
+    }
     
     // сортировка
     public function _sortTask($name, $sort){

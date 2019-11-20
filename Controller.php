@@ -35,10 +35,19 @@ class Controller
     }
 
     public function del($id){
-        $model = new Model();    
+        $model = new Model();        
+        $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
         header("Location: /"); 
-        $model->template = 'views/main.php';   
         $model->_delTask($id);
+        $view = new View($this, $model);
+        $view->output();
+    }
+
+    public function update($id){
+        $model = new Model();        
+        $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
+        //header("Location: /"); 
+        $model->_updateTask($id, $_POST['name'], $_POST['email'], $_POST['task']);
         $view = new View($this, $model);
         $view->output();
     }

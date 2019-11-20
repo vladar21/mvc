@@ -58,8 +58,6 @@ require_once('View.php')
             <div class="col-md-2"><a href="/sort/email"><h2>email</h2></a></div>
             <div class="col-md-6"><h2>task</h2></div>
             <div class="col-md-1"><a href="/sort/status"><h2>status</h2></a></div>
-            <div class="col-md-1"><h2>admin</h2></div>
-            <div class="col-md-1"><h2></h2></div>
         </div> 
         <?php if ($data){
             
@@ -68,8 +66,7 @@ require_once('View.php')
                 echo '<div class="col-md-2"><h3>'.$str[1].'</h3></div>';
                 echo '<div class="col-md-2"><h3>'.$str[2].'</h3></div>';
                 echo '<div class="col-md-6"><h3>'.$str[3].'</h3></div>';
-                echo '<div class="col-md-1"><h3>'.$str[4].'</h3></div>';
-                echo '<div class="col-md-1"><h3></h3></div>';
+                echo '<div class="col-md-1 form-check-inline"><h3 style="margin:auto;">'.$str[4].'</h3></div>';
                 // echo '<div class="col-md-1"><a href="/del/'.$str[0].'" class="btn btn-danger del btn-md" form="newtask">Del</a></div>';
                 echo '</div>';
             }

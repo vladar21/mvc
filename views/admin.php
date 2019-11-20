@@ -34,6 +34,7 @@ require_once('View.php')
         .del {
             margin-top: 3px;
         }
+
     </style>
 </head>
 <body>
@@ -58,21 +59,22 @@ require_once('View.php')
             <div class="col-md-2"><a href="/sort/email"><h2>email</h2></a></div>
             <div class="col-md-5"><h2>task</h2></div>
             <div class="col-md-1"><a href="/sort/status"><h2>status</h2></a></div>
-            <div class="col-md-2"><h2>admin</h2></div>
-            
+            <div class="col-md-2"><h2>admin</h2></div>            
         </div> 
         <?php if ($data){
             
             foreach($data as $str){
-                echo '<div class="form-inline">';
-                echo '<div class="col-md-2"><h3><input type="text" class="form-control" name="name" value="'.$str[1].'"></h3></div>';
-                // echo '<div class="col-md-2"><h3>'.$str[1].'</h3></div>';
-                echo '<div class="col-md-2"><h3><input type="text" class="form-control" name="email" value="'.$str[2].'"></h3></div>';
-                echo '<div class="col-md-5"><h3><input type="text" class="form-control" name="task" value="'.$str[3].'"></h3></div>';
-                echo '<div class="col-md-1"><h3><input type="text" class="form-control col-md-1" name="status" value="'.$str[4].'"></h3></div>';
-                echo '<div class="col-md-1"><button type="submit" class="btn btn-primary">Save</button></div>';
-                echo '<div class="col-md-1"><a href="/del/'.$str[0].'" class="btn btn-danger del btn-md">Del</a></div>';
-                echo '</div>';
+                echo '<form class="form-inline" method="POST" action="/update/'.$str[0].'">';
+                //echo '<div class="input-group">';
+                echo '<div class="col-md-2"><input type="text" class="input-group form-control" name="name" value="'.$str[1].'"></div>';
+                // echo '<div class="col-md-2">'.$str[1].'</h3></div>';
+                echo '<div class="col-md-2"><input type="text" class="input-group form-control" name="email" value="'.$str[2].'"></div>';
+                echo '<div class="col-md-5"><input type="text" class="input-group form-control" name="task" style="width:100%; max-width:100%;" value="'.$str[3].'"></div>';
+                echo '<div class="col-md-1"><input type="checkbox" class="input-group form-control form-check-input" name="status" id="Check1" unchecked>'.$str[4].'</div>';
+                echo '<div class="col-md-1"><button type="submit" class="input-group form-control btn btn-primary">Update</button></div>';
+                echo '<div class="col-md-1"><a href="/del/'.$str[0].'" class="input-group form-control btn btn-danger del">Del</a></div>';
+                //echo '</div>';
+                echo '</form>';
             }
             
         }

@@ -25,9 +25,7 @@ if (!isset($_SESSION['sortStatus'])) {
 var_dump($_SESSION['isAdmin']);//////////////////////////
 
 $model = new Model();
-if ($_SESSION['isAdmin']) {
-    $model->template = 'views/admin.php';
-} else $model->template = 'views/main.php';
+$model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
 $controller = new Controller($model);
 $view = new View($controller, $model);
 
@@ -35,9 +33,9 @@ $view = new View($controller, $model);
 // Обработка маршрутов
 //$controller_name = 'Main';
 $action_name = 'index';    
-if (!isset($_SESSION['isAdmin'])) {
-    $isAdmin = true;
-}
+// if (!isset($_SESSION['isAdmin'])) {
+//     $isAdmin = true;
+// }
 
 var_dump($_SESSION['isAdmin']);//////////////////////////
 
@@ -79,6 +77,9 @@ switch($action_name){
         $controller->{$action_name}();
     break;
     case "del":
+        $controller->{$action_name}($routes[2]);        
+    break;
+    case "update":
         $controller->{$action_name}($routes[2]);        
     break;
     case "auth":
