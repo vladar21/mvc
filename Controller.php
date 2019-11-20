@@ -13,7 +13,6 @@ class Controller
     public function sort($name, $type){
         $model = new Model();   
         $model->template ='views/main.php';
-        var_dump($model->template);
         $model->_sortTask($name, $type);
         $view = new View($this, $model);        
         $view->output(); 
@@ -22,7 +21,6 @@ class Controller
     public function sortAdmin($name, $type){
         $model = new Model();  
         $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
-        var_dump($model->template);
         $model->_sortTask($name, $type);
         $view = new View($this, $model);        
         $view->output(); 
@@ -45,10 +43,20 @@ class Controller
     }
 
     public function add(){ 
+        $model = new Model();             
+        header("Location: /");  
+        $model->template = 'views/main.php';   
+        $model->_addTask($_POST['name'], $_POST['email'], $_POST['task']);
+        $view = new View($this, $model);
+        $view->output();
+    }
+
+    public function addAdmin(){ 
         $model = new Model();     
         ($_SESSION['isAdmin'])?header("Location: /admin"):header("Location: /");  
         $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';   
         $model->_addTask($_POST['name'], $_POST['email'], $_POST['task']);
+
         $view = new View($this, $model);
         $view->output();
     }

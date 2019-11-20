@@ -13,7 +13,7 @@ class Model
         $db = new PDO('sqlite:./mysqlite.sqlite');
         $db->exec('CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY, name TEXT NOT NULL, 
-            email TEXT NOT NULL, task TEXT NOT NULL, status TEXT NOT NULL)');
+            email TEXT NOT NULL, task TEXT NOT NULL, stat TEXT NOT NULL)');
         
         return $db;
     }
@@ -51,7 +51,7 @@ class Model
         $t = $this->test_input($t);
        
         $db = $this->loadDB();        
-        $db->exec("INSERT INTO tasks (name, email, task, status) VALUES ('$n', '$em', '$t', 'Work')");
+        $db->exec("INSERT INTO tasks (name, email, task, stat) VALUES ('$n', '$em', '$t', 'Work')");
     }
 
     public function _delTask($id){        
@@ -66,7 +66,7 @@ class Model
         $em = $_POST['email'];
         $t = $_POST['task'];
         $st = $_POST['status'];
-        $sql = "UPDATE tasks SET name='$n', email='$em', task='$t', status='$st' WHERE id='$id'";
+        $sql = "UPDATE tasks SET name='$n', email='$em', task='$t', stat='$st' WHERE id='$id'";
         $db->exec($sql);            
     }
     
@@ -91,11 +91,11 @@ class Model
                 }
             break;
             case "status":
-                $x = ($sort)?"SELECT * FROM tasks ORDER BY status ASC":"SELECT * FROM tasks ORDER BY status DESC";
+                $x = ($sort)?"SELECT * FROM tasks ORDER BY stat ASC":"SELECT * FROM tasks ORDER BY stat DESC";
                 if (!isset($_SESSION['sortStatus'])) {
                     $_SESSION['sortStatus'] = true;
                 } else {
-                    $_SESSION['sortStatus'] = !$_SESSION['sortStatus'];
+                    $_SESSION['sortStatus'] = !($_SESSION['sortStatus']);
                 }
             break;
             default:
@@ -103,6 +103,16 @@ class Model
         }                    
         $this->string = $db->query($x)->fetchAll();
     }
+    // сообщения
+    public function message($msgIndex){
+        switch($msgIndex){
+            case 1:
+                $_SESSION['show'] = true;
+                $_SESSION['message'] = "Вы успешно добавили новую задачу.";
+            break;
+        }
+    }
+
     // валидация
     public function validation($name, $email){
         // проверяем факт ввода имени

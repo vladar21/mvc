@@ -33,7 +33,9 @@
     </style>
 </head>
 <body>
-    <div class="alert-info">Here will be a message</div>
+    <?php if( $_SESSION['show']) echo '<div class="alert-info">'.$_SESSION['message'].'</div>';
+     $_SESSION['show'] = false;
+      ?>
  
     <form action="add" class="form-inline" method="POST">            
         <input type="text" name="name" placeholder="Input Name" class="form-control col-md-2">    

@@ -38,7 +38,9 @@ require_once('View.php')
     </style>
 </head>
 <body>
-    <div class="alert-info">Here will be a message</div>
+<?php if( $_SESSION['show']) echo '<div class="alert-info">'.$_SESSION['message'].'</div>';
+     $_SESSION['show'] = false;
+      ?>
  
     <form action="admin/add" class="form-inline" method="POST">            
         <input type="text" name="name" placeholder="Input Name" class="form-control col-md-2">    
@@ -79,6 +81,17 @@ require_once('View.php')
             
         }
         ?>
+
+        <nav aria-label="Статьи по Bootstrap 4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a class="page-link" href="#">Предыдущая</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Следующая</a></li>
+            </ul>
+        </nav>
+
     </div>
 </body>
 </html>
