@@ -12,6 +12,7 @@ class Controller
 
     public function sort($name, $type){
         $model = new Model();   
+        //header("Location: /");
         $model->template ='views/main.php';
         $model->_sortTask($name, $type);
         $view = new View($this, $model);        
@@ -19,7 +20,8 @@ class Controller
     }
 
     public function sortAdmin($name, $type){
-        $model = new Model();  
+        $model = new Model();
+        //header("Location: /admin");
         $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
         $model->_sortTask($name, $type);
         $view = new View($this, $model);        
@@ -52,11 +54,10 @@ class Controller
     }
 
     public function addAdmin(){ 
-        $model = new Model();     
-        ($_SESSION['isAdmin'])?header("Location: /admin"):header("Location: /");  
-        $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';   
+        $model = new Model();
+        header("Location: /admin");  
+        $model->template = 'views/admin.php';
         $model->_addTask($_POST['name'], $_POST['email'], $_POST['task']);
-
         $view = new View($this, $model);
         $view->output();
     }
@@ -74,7 +75,6 @@ class Controller
         $model = new Model();        
         header("Location: /admin"); 
         $model->template = 'views/admin.php';     
-        // var_dump("status = ".$_POST['status']);   
         $model->_updateTask($id);
         $view = new View($this, $model);
         $view->output();

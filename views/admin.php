@@ -38,9 +38,7 @@ require_once('View.php')
     </style>
 </head>
 <body>
-<?php if( $_SESSION['show']) echo '<div class="alert-info">'.$_SESSION['message'].'</div>';
-     $_SESSION['show'] = false;
-      ?>
+
  
     <form action="admin/add" class="form-inline" method="POST">            
         <input type="text" name="name" placeholder="Input Name" class="form-control col-md-2">    

@@ -28,8 +28,6 @@ $view = new View($controller, $model);
 // обработка маршрутов
 
 $routes = explode('/', $_SERVER['REQUEST_URI']);
-var_dump($routes);
-
 if ( !empty($routes[1]) )
 {
     $action_name = $routes[1];
@@ -50,7 +48,6 @@ switch($action_name){
             default:
             $x = "";
         };
-        var_dump($_SESSION['sortStatus']);
         $controller->sort($routes[2], $x);
     break;
     case "add":
@@ -76,7 +73,7 @@ switch($action_name){
                         $controller->update($routes[3]);        
                     break;
                     case "add":
-                        $controller->add();
+                        $controller->addAdmin();
                     break;
                     case "sort":
                         switch($routes[3]){

@@ -65,7 +65,7 @@ class Model
         $n = $_POST['name'];
         $em = $_POST['email'];
         $t = $_POST['task'];
-        $st = $_POST['status'];
+        $st = ($_POST['status'])?$_POST['status']:'Work';
         $sql = "UPDATE tasks SET name='$n', email='$em', task='$t', stat='$st' WHERE id='$id'";
         $db->exec($sql);            
     }
