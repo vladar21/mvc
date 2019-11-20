@@ -5,42 +5,36 @@ require_once('Model.php');
 require_once('View.php');
 require_once('Controller.php');
 
-// флаги для сортировки
+// устанавливаем начальные флаги для сортировки
 if (!isset($_SESSION['sortName'])) {
     $sortName = true;
-} else {
-    $sortName = $_SESSION['sortName'];
-}
+} 
 if (!isset($_SESSION['sortEmail'])) {
     $sortEmail = true;
-} else {
-    $sortEmail = $_SESSION['sortEmail'];
-}
+} 
 if (!isset($_SESSION['sortStatus'])) {
     $sortStatus = true;
-} else {
-    $sortStatus = $_SESSION['sortStatus'];
 }
 
-var_dump($_SESSION['isAdmin']);//////////////////////////
+if (isset($_SESSION['isAdmin']) == false) $_SESSION['isAdmin'] = false;
 
-$model = new Model();
-$model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
+var_dump($_SESSION['isAdmin']);
+
+$model = new Model(); 
+$model->template =  ($_SESSION['isAdmin'])?'views/main.php':'views/admin.php';
 $controller = new Controller($model);
 $view = new View($controller, $model);
-
+//$view->output();
 
 // Обработка маршрутов
 //$controller_name = 'Main';
-$action_name = 'index';    
+//$action_name = 'index';    
 // if (!isset($_SESSION['isAdmin'])) {
 //     $isAdmin = true;
 // }
 
-var_dump($_SESSION['isAdmin']);//////////////////////////
-
 $routes = explode('/', $_SERVER['REQUEST_URI']);
-var_dump($routes);//////////////////////////////////////
+var_dump($routes);
 // получаем имя контроллера
 // if ( !empty($routes[0]) )
 // {	
@@ -50,43 +44,88 @@ var_dump($routes);//////////////////////////////////////
 if ( !empty($routes[1]) )
 {
     $action_name = $routes[1];
-}
+} else $action_name = 'index';
 
-var_dump($action_name);/////////////////////////////////
+var_dump($action_name);
 
 switch($action_name){
     case "sort":
         switch($routes[2]){
             case "name":
-                $sortName = !$sortName;       
-                $x = $sortName;                
+                //$sortName = !$sortName;       
+                //$x = $sortName;
+                $x = $_SESSION['sortName'];   
             break;
             case "email":
-                $sortEmail = !$sortEmail;
-                $x = $sortEmail;
+                //$sortEmail = !$sortEmail;
+                //$x = $sortEmail;
+                $x = $_SESSION['sortEmail'];
             break;
             case "status":
-                $sortStatus = !$sortStatus;
-                $x = $sortStatus;
+                //$sortStatus = !$sortStatus;
+                //$x = $sortStatus;
+                $x = $_SESSION['sortStatus'];
             default:
             $x = "";
         };
-        $controller->{$action_name}($routes[2], $x);
+        $controller->sort($routes[2], $x);
     break;
     case "add":
-        $controller->{$action_name}();
-    break;
-    case "del":
-        $controller->{$action_name}($routes[2]);        
-    break;
-    case "update":
-        $controller->{$action_name}($routes[2]);        
-    break;
+        $controller->add();
+    break;    
     case "auth":
-        $controller->{$action_name}();
+        $controller->auth();
+    break;
+    case "logout":
+        $controller->logout();
+    break;
+    case "login":
+        $controller->login();
+    break;
+    case "admin":
+        if ($_SESSION['isAdmin']){
+            if (isset($routes[2])){
+                switch($routes[2]){
+                    case "del":
+                        $controller->del($routes[3]);
+                    break;
+                    case "update":
+                        $controller->update($routes[3]);        
+                    break;
+                    case "add":
+                        $controller->add();
+                    break;
+                    case "sort":
+                        switch($routes[3]){
+                            case "name":
+                                //$sortName = !$sortName;       
+                                //$x = $sortName;      
+                                $x = $_SESSION['sortName'];          
+                            break;
+                            case "email":
+                                //$sortEmail = !$sortEmail;
+                                //$x = $sortEmail;
+                                $x = $_SESSION['sortEmail'];
+                            break;
+                            case "status":                                
+                                //$sortStatus = !$sortStatus;
+                                //$x = $sortStatus;
+                                $x = $_SESSION['sortStatus'];
+                            default:
+                            $x = "";
+                        };
+                        $controller->sortAdmin($routes[3], $x);
+                    break; 
+                    default:
+                    $controller->indexAdmin();
+                }            
+            }
+            else $controller->indexAdmin();
+        }
+        else $controller->index();
     break;
     default:
-    $controller->{$action_name}();
+    $controller->index();
 }
 
 // получаем имя экшена

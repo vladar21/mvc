@@ -1,7 +1,3 @@
-<?php
-require_once('View.php')
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

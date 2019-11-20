@@ -29,7 +29,6 @@ class Model
     }
     // авторизация
     public function _auth($login, $password){
-        var_dump("Auth: ".$login." ".$password);//////////////////////////////
 
         $db = new PDO('sqlite:./mysqlite.sqlite');
         $db->exec("CREATE TABLE IF NOT EXISTS admins (
@@ -41,7 +40,6 @@ class Model
         
         foreach($admins as $admin){
             $_SESSION['isAdmin'] = ($admin[1] == $login && $admin[2] == $password)? true: false;
-            var_dump($admin[1]." ".$admin[2]);///////////////////////////////////////////////
         }
         // здесь, сообщение о том, что авторизация неуспешна
         // if (!$_SESSION['isAdmin]) message ....
@@ -53,7 +51,7 @@ class Model
         $t = $this->test_input($t);
        
         $db = $this->loadDB();        
-        $db->exec("INSERT INTO tasks (name, email, task, status) VALUES ('$n', '$em', '$t', 'work')");
+        $db->exec("INSERT INTO tasks (name, email, task, status) VALUES ('$n', '$em', '$t', 'Work')");
     }
 
     public function _delTask($id){        
@@ -62,10 +60,13 @@ class Model
         $db->exec($sql);            
     }
 
-    public function _updateTask($id, $n, $em, $t){        
+    public function _updateTask($id){        
         $db = $this->loadDB(); 
-        $sql = "UPDATE tasks SET name='$n', email='$em', task='$t' WHERE id=$id";
-        var_dump($sql);
+        $n = $_POST['name'];
+        $em = $_POST['email'];
+        $t = $_POST['task'];
+        $st = $_POST['status'];
+        $sql = "UPDATE tasks SET name='$n', email='$em', task='$t', status='$st' WHERE id='$id'";
         $db->exec($sql);            
     }
     
