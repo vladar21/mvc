@@ -47,8 +47,16 @@ class Controller
     public function add(){ 
         $model = new Model();             
         header("Location: /");  
-        $model->template = 'views/main.php';   
-        $model->_addTask($_POST['name'], $_POST['email'], $_POST['task']);
+        $model->template = 'views/main.php';
+        $val = $model->validation($_POST['name'], $_POST['email']);
+        $_SESSION['show'] = 1;  
+        if($val >= 7 && $val <= 10){
+            $model->message($val);
+        }
+        else{
+            $model->message(1);                  
+            $model->_addTask($_POST['name'], $_POST['email'], $_POST['task']);
+        }        
         $view = new View($this, $model);
         $view->output();
     }
@@ -57,7 +65,15 @@ class Controller
         $model = new Model();
         header("Location: /admin");  
         $model->template = 'views/admin.php';
-        $model->_addTask($_POST['name'], $_POST['email'], $_POST['task']);
+        $val = $model->validation($_POST['name'], $_POST['email']);
+        $_SESSION['show'] = 1;  
+        if($val >= 7 && $val <= 10){
+            $model->message($val);
+        }
+        else{
+            $model->message(1);                  
+            $model->_addTask($_POST['name'], $_POST['email'], $_POST['task']);
+        }        
         $view = new View($this, $model);
         $view->output();
     }
@@ -65,7 +81,9 @@ class Controller
     public function del($id){
         $model = new Model();   
         header("Location: /admin");      
-        $model->template = 'views/admin.php';        
+        $model->template = 'views/admin.php';   
+        $_SESSION['show'] = 1;
+        $model->message(2);        
         $model->_delTask($id);
         $view = new View($this, $model);
         $view->output();
@@ -74,7 +92,9 @@ class Controller
     public function update($id){
         $model = new Model();        
         header("Location: /admin"); 
-        $model->template = 'views/admin.php';     
+        $model->template = 'views/admin.php';
+        $_SESSION['show'] = 1;
+        $model->message(3);    
         $model->_updateTask($id);
         $view = new View($this, $model);
         $view->output();
@@ -83,7 +103,7 @@ class Controller
     public function login(){
         $model = new Model();
         //header("Location: /"); 
-        $model->template = 'views/login.php';
+        $model->template = 'views/login.php';        
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output();        
@@ -92,8 +112,17 @@ class Controller
     public function auth(){
         $model = new Model(); 
         $model->_auth($_POST['login'], $_POST['password']);
-        ($_SESSION['isAdmin'])?header("Location: /admin"):header("Location: /");
-        $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';   
+        $_SESSION['show'] = 1;
+        if ($_SESSION['isAdmin']){
+            header("Location: /admin");
+            $model->template = 'views/admin.php';
+            $model->message(4); 
+        }
+        else{
+            header("Location: /");
+            $model->template = 'views/main.php';
+            $model->message(5);
+        }
         $view = new View($this, $model);
         $view->output();       
     }
@@ -103,6 +132,8 @@ class Controller
         $model = new Model();
         header("Location: /");
         $model->template = 'views/main.php';
+        $_SESSION['show'] = 1;
+        $model->message(6); 
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output(); 

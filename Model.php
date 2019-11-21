@@ -36,22 +36,18 @@ class Model
         
         $admins = $db->query("SELECT * FROM admins")->fetchAll();
         if (count($admins) == 0) $db->exec("INSERT INTO admins (login, password) VALUES ('admin', '123');");
-
         
         foreach($admins as $admin){
             $_SESSION['isAdmin'] = ($admin[1] == $login && $admin[2] == $password)? true: false;
         }
-        // здесь, сообщение о том, что авторизация неуспешна
-        // if (!$_SESSION['isAdmin]) message ....
     }
 
-    public function _addTask($n, $em, $t){
-        $n = $this->test_input($n);
-        $em = $this->test_input($em);
-        $t = $this->test_input($t);
-       
-        $db = $this->loadDB();        
-        $db->exec("INSERT INTO tasks (name, email, task, stat) VALUES ('$n', '$em', '$t', 'Work')");
+    public function _addTask($n, $em, $t){        
+            $n = $this->test_input($n);
+            $em = $this->test_input($em);
+            $t = $this->test_input($t);
+            $db = $this->loadDB();   
+            $db->exec("INSERT INTO tasks (name, email, task, stat) VALUES ('$n', '$em', '$t', 'Work')");        
     }
 
     public function _delTask($id){        
@@ -107,8 +103,34 @@ class Model
     public function message($msgIndex){
         switch($msgIndex){
             case 1:
-                $_SESSION['show'] = true;
                 $_SESSION['message'] = "Вы успешно добавили новую задачу.";
+            break;
+            case 2:
+                $_SESSION['message'] = "Вы успешно удалили задачу.";
+            break;
+            case 3:
+                $_SESSION['message'] = "Вы успешно обновили задачу.";
+            break;
+            case 4:
+                $_SESSION['message'] = "Вы успешно залогинились.";
+            break;
+            case 5:
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Ошибка в имени и/или пароле.</span>';
+            break;
+            case 6:
+                $_SESSION['message'] = "До свидания!";
+            break;
+            case 7:
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Введите имя.</span>';
+            break;
+            case 8:
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Вводите только буквы и пробелы.</span>';
+            break;
+            case 9:
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Введите email.</span>';
+            break;
+            case 10:
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Невалидный email формат.</span>';
             break;
         }
     }
@@ -116,23 +138,26 @@ class Model
     // валидация
     public function validation($name, $email){
         // проверяем факт ввода имени
-        if (empty($_POST["name"])) {
-            return $nameErr = "Name is required";
+        if (empty($_POST["name"])) {          
+            return 7;
         } else {
             $name = test_input($_POST["name"]);
             // проверяем поле имя, оно должно содержать только буквы и пробелы   
             if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
-                return $nameErr = "Only letters and white space allowed";
+                return 8;
+                //return $nameErr = "Only letters and white space allowed";
             }
         }
     
         if (empty($_POST["email"])) {
-            return $emailErr = "Email is required";
+            return 9;
+            //return $emailErr = "Email is required";
         } else {
             $email = test_input($_POST["email"]);
             // проверяем валидность email
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                return $emailErr = "Invalid email format";
+                return 10;
+                //return $emailErr = "Invalid email format";
             }
         }      
     }

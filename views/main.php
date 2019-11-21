@@ -33,10 +33,14 @@
     </style>
 </head>
 <body>
-   
+   <?php 
+    if (isset($_SESSION['show']) && $_SESSION['show'] <= 2){
+       echo '<div class="container-fluid"><div class="alerct alert-info">'.$_SESSION['message'].'</div></div>';
+       $_SESSION['show']++;
+   }  ?>
     <form action="add" class="form-inline" method="POST">            
         <input type="text" name="name" placeholder="Input Name" class="form-control col-md-2">    
-        <input type="email" name="email" placeholder="Input Email" class="form-control col-md-2"> 
+        <input type="text" name="email" placeholder="Input Email" class="form-control col-md-2"> 
         <input type="text" name="task" placeholder="Input Task" class="form-control col-md-6">   
         <button type="submit" class="btn btn-primary col-md-2">AddNewTask</button>
     </form> 
