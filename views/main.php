@@ -75,18 +75,20 @@
                 echo '</div>';
             }
             
-        }
+        }        
+
+        echo '<nav aria-label="Статьи по Bootstrap 4">';
+            echo '<ul class="pagination justify-content-center">';
+                echo '<li class="page-item">'.(($currentPage == 1)?(" "):('<a class="page-link active" href="/">1</a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == 2 || $currentPage == 1)?(" "):('<a class="page-link" href="/page/'.($currentPage - 1).'"><</a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1)?(" "):('<a class="page-link" href="/page/'.$currentPage.'" style="color:black;">'.$currentPage.'</a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == $currentPage)?(" "):('<a class="page-link" href="/page/'.($currentPage + 1).'">></a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == $currentPage)?(" "):('<a class="page-link" href="/page/'.$lastPage.'">'.$lastPage.'</a>')).'</li>';
+            echo '</ul>';
+        echo '</nav>';
+
         ?>
 
-        <nav aria-label="Статьи по Bootstrap 4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">Предыдущая</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Следующая</a></li>
-            </ul>
-        </nav>
     </div>
 </body>
 </html>

@@ -18,7 +18,7 @@ if (!isset($_SESSION['sortStatus'])) {
 
 if (isset($_SESSION['isAdmin']) == false) $_SESSION['isAdmin'] = false;
 
-$model = new Model(); 
+$model = new Model(1); 
 $model->template =  ($_SESSION['isAdmin'])?'views/main.php':'views/admin.php';
 $controller = new Controller($model);
 $view = new View($controller, $model);
@@ -31,7 +31,11 @@ $routes = explode('/', $_SERVER['REQUEST_URI']);
 if ( !empty($routes[1]) )
 {
     $action_name = $routes[1];
-} else $action_name = 'index';
+} else 
+{
+    $page = 1;
+    $action_name = 'index';
+}
 
 switch($action_name){
     case "sort":
@@ -85,23 +89,29 @@ switch($action_name){
                             break;
                             case "status":                                
                                 $x = $_SESSION['sortStatus'];
-                            break;
+                            break;                            
                             default:
                             $x = "";
                         };
                         $controller->sortAdmin($routes[3], $x);
-                    break; 
+                    break;
+                    case "page":
+                        $controller->indexAdmin($routes[3]);            
+                    break;
                     default:
-                    $controller->indexAdmin();
+                    $controller->indexAdmin($page);
                 }            
             }
-            else $controller->indexAdmin();
+            else $controller->indexAdmin(1);
         }
         else $controller->indexMessage(11);
 
     break;
+    case "page":
+        $controller->index($routes[2]);
+    break;
     default:
-    $controller->index();
+    $controller->index($page);
 }
 
 ?>

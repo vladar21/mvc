@@ -11,7 +11,7 @@ class Controller
     }
 
     public function sort($name, $type){
-        $model = new Model();   
+        $model = new Model(1);   
         //header("Location: /");
         $model->template ='views/main.php';
         $model->_sortTask($name, $type);
@@ -20,7 +20,7 @@ class Controller
     }
 
     public function sortAdmin($name, $type){
-        $model = new Model();
+        $model = new Model(1);
         //header("Location: /admin");
         $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
         $model->_sortTask($name, $type);
@@ -29,7 +29,7 @@ class Controller
     }
 
     public function indexMessage($im){
-        $model = new Model();
+        $model = new Model(1);
         $model->template = 'views/main.php';
         $_SESSION['show'] = 1;  
         $model->message($im);
@@ -38,16 +38,18 @@ class Controller
         $view->output();
     }
 
-    public function index(){
-        $model = new Model();
+    public function index($page){
+        $model = new Model($page);
+        $model->currentPage = $page;
         $model->template = 'views/main.php';
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output();     
     }
 
-    public function indexAdmin(){
-        $model = new Model();
+    public function indexAdmin($page){
+        $model = new Model($page);
+        $model->currentPage = $page;
         $model->template = 'views/admin.php';        
         $controller = new Controller($model);
         $view = new View($controller, $model);
@@ -55,7 +57,7 @@ class Controller
     }
 
     public function add(){ 
-        $model = new Model();             
+        $model = new Model(1);             
         header("Location: /");  
         $model->template = 'views/main.php';
         $val = $model->validation($_POST['name'], $_POST['email']);
@@ -72,7 +74,7 @@ class Controller
     }
 
     public function addAdmin(){ 
-        $model = new Model();
+        $model = new Model(1);
         header("Location: /admin");  
         $model->template = 'views/admin.php';
         $val = $model->validation($_POST['name'], $_POST['email']);
@@ -89,7 +91,7 @@ class Controller
     }
 
     public function del($id){
-        $model = new Model();   
+        $model = new Model(1);   
         header("Location: /admin");      
         $model->template = 'views/admin.php';   
         $_SESSION['show'] = 1;
@@ -100,7 +102,7 @@ class Controller
     }
 
     public function update($id){
-        $model = new Model();        
+        $model = new Model(1);        
         header("Location: /admin"); 
         $model->template = 'views/admin.php';
         $_SESSION['show'] = 1;
@@ -111,7 +113,7 @@ class Controller
     }
 
     public function login(){
-        $model = new Model();
+        $model = new Model(1);
         //header("Location: /"); 
         $model->template = 'views/login.php';        
         $controller = new Controller($model);
@@ -120,7 +122,7 @@ class Controller
     }
 
     public function auth(){
-        $model = new Model(); 
+        $model = new Model(1); 
         $model->_auth($_POST['login'], $_POST['password']);
         $_SESSION['show'] = 1;
         if ($_SESSION['isAdmin']){
@@ -138,7 +140,7 @@ class Controller
     }
 
     public function logout(){        
-        $model = new Model();
+        $model = new Model(1);
         header("Location: /");
         $model->logout();
         $model->template = 'views/main.php';

@@ -9,6 +9,10 @@ require_once('View.php')
     <title>TaskDesk</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
+        body{
+            font-size:14pt;
+            font-weight:bold;
+        }
         .head {
             background-color: aquamarine;
         }
@@ -81,17 +85,17 @@ require_once('View.php')
             }
             
         }
-        ?>
 
-        <nav aria-label="Статьи по Bootstrap 4">
-            <ul class="pagination justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">Предыдущая</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Следующая</a></li>
-            </ul>
-        </nav>
+        echo '<nav aria-label="Статьи по Bootstrap 4">';
+            echo '<ul class="pagination justify-content-center">';
+                echo '<li class="page-item">'.(($currentPage == 1)?(" "):('<a class="page-link active" href="/admin">1</a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == 2 || $currentPage == 1)?(" "):('<a class="page-link" href="/admin/page/'.($currentPage - 1).'"><</a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1)?(" "):('<a class="page-link" href="/admin/page/'.$currentPage.'" style="color:black;">'.$currentPage.'</a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == $currentPage)?(" "):('<a class="page-link" href="/admin/page/'.($currentPage + 1).'">></a>')).'</li>';
+                echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == $currentPage)?(" "):('<a class="page-link" href="/admin/page/'.$lastPage.'">'.$lastPage.'</a>')).'</li>';
+            echo '</ul>';
+        echo '</nav>';
+        ?>
 
     </div>
 </body>

@@ -3,9 +3,17 @@
 class Model
 {
     public $string;
-    public function __construct(){        
+    public $lastPage;
+    public $currentPage;
+    public function __construct($page){        
         $db = $this->loadDB();
         $this->string = $db->query('SELECT * FROM tasks')->fetchAll();
+        $this->lastPage = ceil(count($this->string)/3);
+        $this->currentPage = $page;
+        if ($page == $this->lastPage){
+            $offset = count($this->string) - $this->lastPage * 3;
+        } else $offset = 3;
+        $this->string = $db->query("SELECT * FROM tasks LIMIT $page*3 - 3, $offset")->fetchAll();
         $this->template = 'views/main.php';
     }
 
