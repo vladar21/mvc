@@ -60,20 +60,20 @@ require_once('View.php')
         <div class="row head">
             <div class="col-md-2"><a href="/admin/sort/name"><h2>name</h2></a></div>
             <div class="col-md-2"><a href="/admin/sort/email"><h2>email</h2></a></div>
-            <div class="col-md-5"><h2>task</h2></div>
+            <div class="col-md-4"><h2>task</h2></div>
             <div class="col-md-1"><a href="/admin/sort/status"><h2>status</h2></a></div>
+            <div class="col-md-1"><h2>edited</h2></div>
             <div class="col-md-2"><h2>admin</h2></div>            
         </div> 
         <?php if ($data){
             
             foreach($data as $str){
                 echo '<form class="form-inline" method="POST" action="/admin/update/'.$str[0].'">';
-                //echo '<div class="input-group">';
                 echo '<div class="col-md-2"><input type="text" class="input-group form-control" name="name" value="'.$str[1].'"></div>';
-                // echo '<div class="col-md-2">'.$str[1].'</h3></div>';
                 echo '<div class="col-md-2"><input type="text" class="input-group form-control" name="email" value="'.$str[2].'"></div>';
-                echo '<div class="col-md-5"><input type="text" class="input-group form-control" name="task" style="width:100%; max-width:100%;" value="'.$str[3].'"></div>';
-                echo '<div class="col-md-1"><input type="checkbox" class="input-group form-control form-check-input" name="status" id="Check1" value="Done"" '.(($str[4] == "Done")?'checked':'unchecked').'></div>';
+                echo '<div class="col-md-4"><input type="text" class="input-group form-control" name="task" style="width:100%; max-width:100%;" value="'.$str[3].'"></div>';
+                echo '<div class="col-md-1"><input type="checkbox" class="input-group form-control form-check-input" name="status" id="Check1" value="Done"" '.(($str[5] == "Done")?'checked':'unchecked').'></div>';
+                echo '<div class="col-md-1"><input type="text" class="input-group form-control" name="edited" style="width:100%; max-width:100%;" value="'.$str[4].'"></div>';
                 echo '<div class="col-md-1"><button type="submit" class="input-group form-control btn btn-primary">Update</button></div>';
                 echo '<div class="col-md-1"><a href="/admin/del/'.$str[0].'" class="input-group form-control btn btn-danger del">Del</a></div>';
                 //echo '</div>';

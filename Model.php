@@ -13,7 +13,7 @@ class Model
         $db = new PDO('sqlite:./mysqlite.sqlite');
         $db->exec('CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY, name TEXT NOT NULL, 
-            email TEXT NOT NULL, task TEXT NOT NULL, stat TEXT NOT NULL)');
+            email TEXT NOT NULL, task TEXT NOT NULL, edited TEXT NOT NULL, stat TEXT NOT NULL)');
         
         return $db;
     }
@@ -47,7 +47,7 @@ class Model
             $em = $this->test_input($em);
             $t = $this->test_input($t);
             $db = $this->loadDB();   
-            $db->exec("INSERT INTO tasks (name, email, task, stat) VALUES ('$n', '$em', '$t', 'Work')");        
+            $db->exec("INSERT INTO tasks (name, email, task, edited, stat) VALUES ('$n', '$em', '$t', 'No', 'Work')");        
     }
 
     public function _delTask($id){        
@@ -61,8 +61,9 @@ class Model
         $n = $_POST['name'];
         $em = $_POST['email'];
         $t = $_POST['task'];
+        $ed = "Yes";
         $st = ($_POST['status'])?$_POST['status']:'Work';
-        $sql = "UPDATE tasks SET name='$n', email='$em', task='$t', stat='$st' WHERE id='$id'";
+        $sql = "UPDATE tasks SET name='$n', email='$em', task='$t', edited='$ed', stat='$st' WHERE id='$id'";
         $db->exec($sql);            
     }
     
@@ -118,19 +119,22 @@ class Model
                 $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Ошибка в имени и/или пароле.</span>';
             break;
             case 6:
-                $_SESSION['message'] = "До свидания!";
+                $_SESSION['message'] = "До свидания, Admin!";
             break;
             case 7:
                 $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Введите имя.</span>';
             break;
             case 8:
-                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Вводите только буквы и пробелы.</span>';
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Вводите в поле "name" только буквы и пробелы.</span>';
             break;
             case 9:
                 $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Введите email.</span>';
             break;
             case 10:
                 $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Невалидный email формат.</span>';
+            break;
+            case 11:
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Необходимо авторизоваться.</span>';
             break;
         }
     }
@@ -141,7 +145,7 @@ class Model
         if (empty($_POST["name"])) {          
             return 7;
         } else {
-            $name = test_input($_POST["name"]);
+            $name = $this->test_input($_POST["name"]);
             // проверяем поле имя, оно должно содержать только буквы и пробелы   
             if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
                 return 8;
@@ -153,12 +157,16 @@ class Model
             return 9;
             //return $emailErr = "Email is required";
         } else {
-            $email = test_input($_POST["email"]);
+            $email = $this->test_input($_POST["email"]);
             // проверяем валидность email
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 return 10;
                 //return $emailErr = "Invalid email format";
             }
         }      
+    }
+
+    public function logout(){
+        return $_SESSION['isAdmin'] = false;
     }
 }

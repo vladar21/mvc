@@ -28,6 +28,16 @@ class Controller
         $view->output(); 
     }
 
+    public function indexMessage($im){
+        $model = new Model();
+        $model->template = 'views/main.php';
+        $_SESSION['show'] = 1;  
+        $model->message($im);
+        $controller = new Controller($model);
+        $view = new View($controller, $model);
+        $view->output();
+    }
+
     public function index(){
         $model = new Model();
         $model->template = 'views/main.php';
@@ -38,7 +48,7 @@ class Controller
 
     public function indexAdmin(){
         $model = new Model();
-        $model->template = 'views/admin.php';
+        $model->template = 'views/admin.php';        
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output();     
@@ -127,10 +137,10 @@ class Controller
         $view->output();       
     }
 
-    public function logout(){
-        $_SESSION['isAdmin'] = false;
+    public function logout(){        
         $model = new Model();
         header("Location: /");
+        $model->logout();
         $model->template = 'views/main.php';
         $_SESSION['show'] = 1;
         $model->message(6); 

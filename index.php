@@ -97,7 +97,8 @@ switch($action_name){
             }
             else $controller->indexAdmin();
         }
-        else $controller->index();
+        else $controller->indexMessage(11);
+
     break;
     default:
     $controller->index();
