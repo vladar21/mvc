@@ -51,7 +51,6 @@
   
     <div class="container-fluid">
         <div class="row">
-            <!-- <button type="submit" class="btn btn-outline-danger autoriz btn-md" form="newtask">Login</button> -->
             <a href="/login" class="btn btn-outline-danger autoriz btn-md">Login</a>
             <h1 class="col-md-11">Task`s Desk</h1>
         </div>            
@@ -61,7 +60,7 @@
             <div class="col-md-2"><a href="/sort/email"><h2>email</h2></a></div>
             <div class="col-md-6"><h2>task</h2></div>
             <div class="col-md-1"><h2>edited</h2></div>
-            <div class="col-md-1"><a href="/sort/status"><h2>status</h2></a></div>
+            <div class="col-md-1"><a href="/sort/stat"><h2>status</h2></a></div>
         </div> 
         <?php if ($data){
             
@@ -79,7 +78,7 @@
 
         echo '<nav aria-label="Статьи по Bootstrap 4">';
             echo '<ul class="pagination justify-content-center">';
-                echo '<li class="page-item">'.(($currentPage == 1)?(" "):('<a class="page-link active" href="/">1</a>')).'</li>';
+                echo '<li class="page-item">'.(($currentPage == 1)?(" "):('<a class="page-link active" href="/page/1">1</a>')).'</li>';
                 echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == 2 || $currentPage == 1)?(" "):('<a class="page-link" href="/page/'.($currentPage - 1).'"><</a>')).'</li>';
                 echo '<li class="page-item">'.(($lastPage == 1)?(" "):('<a class="page-link" href="/page/'.$currentPage.'" style="color:black;">'.$currentPage.'</a>')).'</li>';
                 echo '<li class="page-item">'.(($lastPage == 1 || $lastPage == $currentPage)?(" "):('<a class="page-link" href="/page/'.($currentPage + 1).'">></a>')).'</li>';

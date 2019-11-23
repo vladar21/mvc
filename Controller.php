@@ -5,31 +5,59 @@ require_once('View.php');
 class Controller
 {
     private $model;
+    // конструктор контроллера с параметрами
     public function __construct($model) {
         $this->model = $model;
         $this->template = 'views/main.php';
     }
-
-    public function sort($name, $type){
-        $model = new Model(1);   
-        //header("Location: /");
-        $model->template ='views/main.php';
-        $model->_sortTask($name, $type);
+    // пользовательская сортировка
+    public function sort($name, $p){    
+        $type = ($_SESSION['sortType'] == 'ASC')?'DESC':'ASC';
+        $_SESSION['sortType'] = $type;
+        $_SESSION['currentPage'] = $p;
+        $model = new Model($p, $type, $name);
+        
+        switch($name){
+            case "name":                
+                $_SESSION['nameSort'] = 'name';
+            break;
+            case "email":                
+                $_SESSION['nameSort'] = 'email';
+            break;
+            case "stat":                
+                $_SESSION['nameSort'] = 'stat';
+            break;
+        }     
+        $model->template = 'views/main.php';
+        $view = new View($this, $model);        
+        $view->output();         
+    }
+    // сортировка под админом
+    public function sortAdmin($name, $p){     
+        $type = ($_SESSION['sortType'] == 'ASC')?'DESC':'ASC';
+        $_SESSION['sortType'] = $type;
+        //$page = $this->currpage();
+        $_SESSION['currentPage'] = $p;
+        $model = new Model($p, $type, $name);
+        
+        switch($name){
+            case "name":                
+                $_SESSION['nameSort'] = 'name';
+            break;
+            case "email":                
+                $_SESSION['nameSort'] = 'email';
+            break;
+            case "stat":                
+                $_SESSION['nameSort'] = 'stat';
+            break;
+        }     
+        $model->template = 'views/admin.php';
         $view = new View($this, $model);        
         $view->output(); 
     }
-
-    public function sortAdmin($name, $type){
-        $model = new Model(1);
-        //header("Location: /admin");
-        $model->template = ($_SESSION['isAdmin'])?'views/admin.php':'views/main.php';
-        $model->_sortTask($name, $type);
-        $view = new View($this, $model);        
-        $view->output(); 
-    }
-
+    // вывод служебных сообщений на экран
     public function indexMessage($im){
-        $model = new Model(1);
+        $model = new Model($this->currpage(), $this->currtype(), $this->currname());
         $model->template = 'views/main.php';
         $_SESSION['show'] = 1;  
         $model->message($im);
@@ -37,28 +65,31 @@ class Controller
         $view = new View($controller, $model);
         $view->output();
     }
-
-    public function index($page){
-        $model = new Model($page);
-        $model->currentPage = $page;
+    // вывод текущей страницы
+    public function index($p){  
+        $_SESSION['currentPage'] = $p; 
+        $_SESSION['start'] = true;     
+        $model = new Model($p, $this->currtype(), $this->currname());     
         $model->template = 'views/main.php';
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output();     
     }
-
-    public function indexAdmin($page){
-        $model = new Model($page);
-        $model->currentPage = $page;
+    // вывод текущей страницы под админом
+    public function indexAdmin($p){
+        $_SESSION['currentPage'] = $p; 
+        $_SESSION['start'] = true;
+        $model = new Model($p, $this->currtype(), $this->currname());
         $model->template = 'views/admin.php';        
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output();     
     }
-
-    public function add(){ 
-        $model = new Model(1);             
-        header("Location: /");  
+    // добавляем новую задачу (пользователь)
+    public function add($p){   
+        $_SESSION['currentPage'] = $p;        
+        $model = new Model($p, $this->currtype(), $this->currname());
+        header("Location: /");
         $model->template = 'views/main.php';
         $val = $model->validation($_POST['name'], $_POST['email']);
         $_SESSION['show'] = 1;  
@@ -72,9 +103,10 @@ class Controller
         $view = new View($this, $model);
         $view->output();
     }
-
+    // добавляем новую задачу (админ)
     public function addAdmin(){ 
-        $model = new Model(1);
+        $p = $this->currpage();
+        $model = new Model($p, $this->currtype(), $this->currname());
         header("Location: /admin");  
         $model->template = 'views/admin.php';
         $val = $model->validation($_POST['name'], $_POST['email']);
@@ -89,21 +121,23 @@ class Controller
         $view = new View($this, $model);
         $view->output();
     }
-
+    // удаляем задачу
     public function del($id){
-        $model = new Model(1);   
-        header("Location: /admin");      
+        $p = $this->currpage();        
+        $model = new Model($p, $this->currtype(), $this->currname());   
+        if ($model->_delTask($id)) $model->message(2);
+            else $model->message(12);
+        header("Location: /admin/page/".$p."");
         $model->template = 'views/admin.php';   
-        $_SESSION['show'] = 1;
-        $model->message(2);        
-        $model->_delTask($id);
+        $_SESSION['show'] = 1;              
         $view = new View($this, $model);
         $view->output();
     }
-
+    // вносим изменения в задачу (под админом)
     public function update($id){
-        $model = new Model(1);        
-        header("Location: /admin"); 
+        $p = $this->currpage();
+        $model = new Model($p, $this->currtype(), $this->currname());
+        header("Location: /admin/page/".$p.""); 
         $model->template = 'views/admin.php';
         $_SESSION['show'] = 1;
         $model->message(3);    
@@ -111,18 +145,17 @@ class Controller
         $view = new View($this, $model);
         $view->output();
     }
-
-    public function login(){
-        $model = new Model(1);
-        //header("Location: /"); 
+    // выводим форму для авторизации 
+    public function login(){        
+        $model = new Model($this->currpage(), $this->currtype(), $this->currname());
         $model->template = 'views/login.php';        
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output();        
     }
-
+    // авторизация
     public function auth(){
-        $model = new Model(1); 
+        $model = new Model($this->currpage(), $this->currtype(), $this->currname()); 
         $model->_auth($_POST['login'], $_POST['password']);
         $_SESSION['show'] = 1;
         if ($_SESSION['isAdmin']){
@@ -138,9 +171,9 @@ class Controller
         $view = new View($this, $model);
         $view->output();       
     }
-
-    public function logout(){        
-        $model = new Model(1);
+    // выход из режима админа
+    public function logout(){ 
+        $model = new Model($this->currpage(), $this->currtype(), $this->currname());
         header("Location: /");
         $model->logout();
         $model->template = 'views/main.php';
@@ -149,6 +182,24 @@ class Controller
         $controller = new Controller($model);
         $view = new View($controller, $model);
         $view->output(); 
+    }
+    // вспомогательная функция для определения поля для сортировки текущей страницы
+    public function currname(){
+        if (isset($_SESSION['nameSort']) == false) $n = 'name';
+        else $n = $_SESSION['nameSort'];
+        return $n;
+    } 
+    // вспомогательная функция для определения вида сортировки текущей страницы
+    public function currtype(){
+        if (isset($_SESSION['sortType']) == false) $t = 'ASC';
+        else $t = $_SESSION['sortType'];
+        return $t;
+    }
+    // вспомогательная функция для определения номера текущей страницы
+    public function currpage(){
+        if (isset($_SESSION['currentPage']) == false) $p = 1;
+        else $p = $_SESSION['currentPage'];
+        return $p;
     }
 }
 ?>

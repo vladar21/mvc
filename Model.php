@@ -5,18 +5,29 @@ class Model
     public $string;
     public $lastPage;
     public $currentPage;
-    public function __construct($page){        
+    public $sortedField;
+    public $sortedType;
+    public $Count;
+    // конструктор модели с параметрами
+    public function __construct($page, $sT, $sF){      
         $db = $this->loadDB();
         $this->string = $db->query('SELECT * FROM tasks')->fetchAll();
-        $this->lastPage = ceil(count($this->string)/3);
+        $this->Count = count($this->string);
+        $this->lastPage = ceil($this->Count/3);
         $this->currentPage = $page;
-        if ($page == $this->lastPage){
-            $offset = count($this->string) - $this->lastPage * 3;
-        } else $offset = 3;
-        $this->string = $db->query("SELECT * FROM tasks LIMIT $page*3 - 3, $offset")->fetchAll();
-        $this->template = 'views/main.php';
-    }
+        $this->sortedType = $sT;
+        $this->sortedField = $sF;
 
+        if ($this->currentPage == $this->lastPage){
+            $offset = $this->Count - ($this->currentPage - 1) * 3;
+        } else $offset = 3;
+        $start = ceil($page)*3 - 3;    
+
+        $x = "SELECT * FROM tasks ORDER BY $sF $sT LIMIT $start, $offset";        
+        
+        $this->string = $db->query($x)->fetchAll();
+    }
+    // загрузка данных из базы
     public function loadDB(){
         $db = new PDO('sqlite:./mysqlite.sqlite');
         $db->exec('CREATE TABLE IF NOT EXISTS tasks (
@@ -37,77 +48,44 @@ class Model
     }
     // авторизация
     public function _auth($login, $password){
-
+        // загружаем авторизационные данные из базы
         $db = new PDO('sqlite:./mysqlite.sqlite');
         $db->exec("CREATE TABLE IF NOT EXISTS admins (
             id INTEGER PRIMARY KEY, login TEXT NOT NULL, password TEXT NOT NULL);");
         
         $admins = $db->query("SELECT * FROM admins")->fetchAll();
         if (count($admins) == 0) $db->exec("INSERT INTO admins (login, password) VALUES ('admin', '123');");
-        
+        // проверяем авторизационные данные
         foreach($admins as $admin){
             $_SESSION['isAdmin'] = ($admin[1] == $login && $admin[2] == $password)? true: false;
         }
     }
-
+    // добавляем задачу в базу
     public function _addTask($n, $em, $t){        
-            $n = $this->test_input($n);
-            $em = $this->test_input($em);
-            $t = $this->test_input($t);
-            $db = $this->loadDB();   
-            $db->exec("INSERT INTO tasks (name, email, task, edited, stat) VALUES ('$n', '$em', '$t', 'No', 'Work')");        
+        $n = $this->test_input($n);
+        $em = $this->test_input($em);
+        $t = $this->test_input($t);        
+        $db = $this->loadDB();   
+        $db->exec("INSERT INTO tasks (name, email, task, edited, stat) VALUES ('$n', '$em', '$t', 'No', 'Work')");        
     }
-
+    // удаляем задачу из базы
     public function _delTask($id){        
         $db = $this->loadDB(); 
         $sql = "DELETE FROM tasks WHERE id=$id";
-        $db->exec($sql);            
+        return ($db->exec($sql))?1:0;                  
     }
-
+    // вносим изменения в данные задачи
     public function _updateTask($id){        
         $db = $this->loadDB(); 
         $n = $_POST['name'];
         $em = $_POST['email'];
         $t = $_POST['task'];
-        $ed = "Yes";
-        $st = ($_POST['status'])?$_POST['status']:'Work';
+        $ed = 'Yes';
+        $st = ($_POST['stat'])?$_POST['stat']:'Work';
         $sql = "UPDATE tasks SET name='$n', email='$em', task='$t', edited='$ed', stat='$st' WHERE id='$id'";
         $db->exec($sql);            
     }
     
-    // сортировка
-    public function _sortTask($name, $sort){
-        $db = new PDO('sqlite:./mysqlite.sqlite');
-        switch($name){
-            case "name":
-                $x = ($sort)?"SELECT * FROM tasks ORDER BY name ASC":"SELECT * FROM tasks ORDER BY name DESC";
-                if (!isset($_SESSION['sortName'])) {
-                    $_SESSION['sortName'] = true;
-                } else {
-                    $_SESSION['sortName'] = !$_SESSION['sortName'];
-                }
-            break;
-            case "email":
-                $x = ($sort)?"SELECT * FROM tasks ORDER BY email ASC":"SELECT * FROM tasks ORDER BY email DESC";
-                if (!isset($_SESSION['sortEmail'])) {
-                    $_SESSION['sortEmail'] = true;
-                } else {
-                    $_SESSION['sortEmail'] = !$_SESSION['sortEmail'];
-                }
-            break;
-            case "status":
-                $x = ($sort)?"SELECT * FROM tasks ORDER BY stat ASC":"SELECT * FROM tasks ORDER BY stat DESC";
-                if (!isset($_SESSION['sortStatus'])) {
-                    $_SESSION['sortStatus'] = true;
-                } else {
-                    $_SESSION['sortStatus'] = !($_SESSION['sortStatus']);
-                }
-            break;
-            default:
-            $x = "SELECT * FROM tasks";
-        }                    
-        $this->string = $db->query($x)->fetchAll();
-    }
     // сообщения
     public function message($msgIndex){
         switch($msgIndex){
@@ -144,6 +122,9 @@ class Model
             case 11:
                 $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Необходимо авторизоваться.</span>';
             break;
+            case 12:
+                $_SESSION['message'] = '<span style="color:red;font-weight:bold">ВНИМАНИЕ! Запись не была удалена.</span>';
+            break;
         }
     }
 
@@ -157,7 +138,6 @@ class Model
             // проверяем поле имя, оно должно содержать только буквы и пробелы   
             if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
                 return 8;
-                //return $nameErr = "Only letters and white space allowed";
             }
         }
     
@@ -173,7 +153,7 @@ class Model
             }
         }      
     }
-
+    // заверщаем сессию админа
     public function logout(){
         return $_SESSION['isAdmin'] = false;
     }

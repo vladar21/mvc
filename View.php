@@ -9,10 +9,10 @@ class View
     }
 	
     public function output(){
-        // return "<p>" . $this->model->db . "</p>";
         $data = $this->model->string;
         $lastPage = $this->model->lastPage;
         $currentPage = $this->model->currentPage;
+        $_SESSION['currentPage'] = $currentPage;
         require_once($this->model->template);
     }
 }
